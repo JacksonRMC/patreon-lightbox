@@ -1,0 +1,25 @@
+{
+  "name": "patreon-lightbox",
+  "version": "1.0.0",
+  "description": "giphy trending lightbox app",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/calebcordry/patreon-lightbox.git"
+  },
+  "keywords": [
+    "lightbox"
+  ],
+  "author": "Caleb Cordry",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/calebcordry/patreon-lightbox/issues"
+  },
+  "homepage": "https://github.com/calebcordry/patreon-lightbox#readme",
+  "devDependencies": {
+    "browser-sync": "^2.18.13"
+  }
+}
