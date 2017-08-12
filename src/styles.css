@@ -1,6 +1,7 @@
 :root {
   --main-color: black;
   --font-color: white;
+  --arrow-size: 50px;
 }
 
 body {
@@ -23,19 +24,6 @@ header {
   margin: 5px;
 }
 
-.overlay {
-  background-color: black;
-  opacity: 0.9;
-  position: fixed;
-  top: 0;
-  left: 0;
-  min-width: 100vw;
-  min-height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .spinner {
   background: url('images/Patreon_logomark.svg');
   width: 100px;
@@ -44,6 +32,36 @@ header {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.overlay {
+  background-color: rgba(255, 255, 255, 0.9);
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-width: 100vw;
+  min-height: 100%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.arrow {
+  padding: 10px;
+  height: 50px;
+  width: 50px;
+}
+
+.left-arrow {
+  background: url('images/left_arrow.svg') no-repeat;
+}
+
+.right-arrow {
+  background: url('images/right_arrow.svg') no-repeat;
+}
+
+.feature-container {
+  opacity: 1;
 }
