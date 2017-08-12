@@ -1,14 +1,15 @@
 :root {
-  --main-color:
+  --main-color: black;
+  --font-color: white;
 }
 
 body {
   font-family: "Helvetica Neue", helvetica, sans-serif;
-  background-color: black;
+  background-color: var(--main-color);
 }
 
 header {
-  color: white;
+  color: var(--font-color);
   margin: 10px 30px;
 }
 
@@ -16,11 +17,23 @@ header {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  max-width: 100vw;
 }
 
 .thumbnail-container {
   margin: 5px;
+}
+
+.overlay {
+  background-color: black;
+  opacity: 0.9;
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-width: 100vw;
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .spinner {

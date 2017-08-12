@@ -13,16 +13,24 @@ async function fetchTrending() {
   return json.data;
 }
 
-// for initial gallery view
-const getThumbnailUrls = allData =>
-  allData.map(gif => gif.images.fixed_width.url);
+function openLightbox(e, allData) {
+  const el = e.target;
 
-function createThumbnailElement(url) {
+  const overlay = document.createElement('div');
+  overlay.className = 'overlay';
+  document.body.appendChild(overlay);
+}
+
+
+function createThumbnailElement(gifData, index) {
+  const url = gifData.images.fixed_width.url;
+
   const container = document.createElement('a');
   container.className = 'thumbnail-container';
 
   const gif = new Image(200, 200);
   gif.className = 'thumbnail';
+  gif.dataset.index = index;
   gif.src = url;
 
   container.appendChild(gif);
@@ -30,9 +38,9 @@ function createThumbnailElement(url) {
 }
 
 
-function renderThumbnails(urls) {
+function renderThumbnails(allData) {
   const gallery = document.querySelector('.gallery');
-  const thumbnailElements = urls.map(createThumbnailElement);
+  const thumbnailElements = allData.map(createThumbnailElement);
 
   gallery.innerHTML = '';
 
@@ -41,8 +49,10 @@ function renderThumbnails(urls) {
 
 async function main() {
   const allData = await fetchTrending();
-  const thumbnailUrls = getThumbnailUrls(allData);
-  renderThumbnails(thumbnailUrls);
+  renderThumbnails(allData);
+
+  const images = document.querySelectorAll('.thumbnail');
+  images.forEach(img => img.addEventListener('click', e => openLightbox(e, allData)));
 }
 
 document.body.onload = main;
