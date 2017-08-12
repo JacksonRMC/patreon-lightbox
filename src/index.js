@@ -14,11 +14,42 @@ async function fetchTrending() {
 }
 
 function openLightbox(e, allData) {
-  const el = e.target;
+  const overlay = document.querySelector('.overlay');
+  overlay.style.display = 'flex';
 
-  const overlay = document.createElement('div');
-  overlay.className = 'overlay';
-  document.body.appendChild(overlay);
+  const el = e.target;
+  const index = el.dataset.index;
+
+  const gifData = allData[index];
+  renderFeatured(gifData, index);
+}
+
+function closeLightbox() {}
+
+function renderFeatured(gifData, index) {
+  const url = gifData.images.original.url;
+  const gif = new Image();
+  gif.className = 'featured';
+  gif.dataset.index = index;
+  gif.src = url;
+
+  const featureContainer = document.querySelector('.feature-container');
+  featureContainer.innerHTML = '';
+  featureContainer.appendChild(gif);
+}
+
+
+function handleArrowClick(e, direction, allData) {
+  const featured = document.querySelector('.featured');
+  const index = +featured.dataset.index;
+
+  let newIndex = direction === 'left' ? index - 1 : index + 1;
+  if (newIndex < 0) {
+    newIndex = 24;
+  }
+
+  const newGifData = allData[newIndex % 25];
+  renderFeatured(newGifData, newIndex);
 }
 
 
@@ -39,9 +70,9 @@ function createThumbnailElement(gifData, index) {
 
 
 function renderThumbnails(allData) {
-  const gallery = document.querySelector('.gallery');
   const thumbnailElements = allData.map(createThumbnailElement);
 
+  const gallery = document.querySelector('.gallery');
   gallery.innerHTML = '';
 
   thumbnailElements.forEach(thumbnail => gallery.appendChild(thumbnail));
@@ -52,7 +83,15 @@ async function main() {
   renderThumbnails(allData);
 
   const images = document.querySelectorAll('.thumbnail');
+
+  // add event listeners that need ref to data array
   images.forEach(img => img.addEventListener('click', e => openLightbox(e, allData)));
+
+  const leftArrow = document.querySelector('.left-arrow');
+  leftArrow.addEventListener('click', e => handleArrowClick(e, 'left', allData));
+
+  const rightArrow = document.querySelector('.right-arrow');
+  rightArrow.addEventListener('click', e => handleArrowClick(e, 'right', allData));
 }
 
 document.body.onload = main;
