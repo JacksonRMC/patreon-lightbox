@@ -23,16 +23,19 @@ function renderFeatured(gifData, index) {
   gif.src = url;
   gif.alt = slug;
 
-  debugger;
+  // no tags in GIPHY response.
+  const pTag = document.createElement('p');
+  pTag.className = 'tags';
+  pTag.textContent = '#placeholder #more';
 
   const photoOverlay = document.createElement('div');
   photoOverlay.className = 'photo-overlay';
-
-
+  photoOverlay.appendChild(pTag);
 
   const featureContainer = document.querySelector('.feature-container');
   featureContainer.innerHTML = '';
   featureContainer.appendChild(gif);
+  featureContainer.appendChild(photoOverlay);
 }
 
 
