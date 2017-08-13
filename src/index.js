@@ -1,4 +1,4 @@
-const HOST = 'http://api.giphy.com';
+const HOST = 'https://api.giphy.com';
 const PATH = '/v1/gifs/trending';
 const LIMIT = 25;
 const RATING = 'G';
@@ -13,29 +13,48 @@ async function fetchTrending() {
   return json.data;
 }
 
+function renderFeatured(gifData, index) {
+  const { images, slug } = gifData;
+  const url = images.original.url;
+
+  const gif = new Image();
+  gif.className = 'featured';
+  gif.dataset.index = index;
+  gif.src = url;
+  gif.alt = slug;
+
+  debugger;
+
+  const photoOverlay = document.createElement('div');
+  photoOverlay.className = 'photo-overlay';
+
+
+
+  const featureContainer = document.querySelector('.feature-container');
+  featureContainer.innerHTML = '';
+  featureContainer.appendChild(gif);
+}
+
+
 function openLightbox(e, allData) {
   const overlay = document.querySelector('.overlay');
   overlay.style.display = 'flex';
 
-  const el = e.target;
-  const index = el.dataset.index;
+  const clickedElement = e.target;
+  const index = clickedElement.dataset.index;
 
   const gifData = allData[index];
   renderFeatured(gifData, index);
 }
 
-function closeLightbox() {}
+// overlay tags
+// documentation
+// review instructions
 
-function renderFeatured(gifData, index) {
-  const url = gifData.images.original.url;
-  const gif = new Image();
-  gif.className = 'featured';
-  gif.dataset.index = index;
-  gif.src = url;
-
-  const featureContainer = document.querySelector('.feature-container');
-  featureContainer.innerHTML = '';
-  featureContainer.appendChild(gif);
+function closeLightbox(e) {
+  e.preventDefault();
+  const overlay = document.querySelector('.overlay');
+  overlay.style.display = 'none';
 }
 
 
@@ -54,7 +73,8 @@ function handleArrowClick(e, direction, allData) {
 
 
 function createThumbnailElement(gifData, index) {
-  const url = gifData.images.fixed_width.url;
+  const { images, slug } = gifData;
+  const url = images.fixed_width.url;
 
   const container = document.createElement('a');
   container.className = 'thumbnail-container';
@@ -63,6 +83,7 @@ function createThumbnailElement(gifData, index) {
   gif.className = 'thumbnail';
   gif.dataset.index = index;
   gif.src = url;
+  gif.alt = slug;
 
   container.appendChild(gif);
   return container;
@@ -78,7 +99,9 @@ function renderThumbnails(allData) {
   thumbnailElements.forEach(thumbnail => gallery.appendChild(thumbnail));
 }
 
+
 async function main() {
+  debugger
   const allData = await fetchTrending();
   renderThumbnails(allData);
 
@@ -92,6 +115,9 @@ async function main() {
 
   const rightArrow = document.querySelector('.right-arrow');
   rightArrow.addEventListener('click', e => handleArrowClick(e, 'right', allData));
+
+  const close = document.querySelector('.close');
+  close.addEventListener('click', closeLightbox);
 }
 
 document.body.onload = main;
