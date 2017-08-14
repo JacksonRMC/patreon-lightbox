@@ -130,3 +130,9 @@ header {
 .feature-container {
   opacity: 1;
 }
+
+@media screen and (max-width: 435px) {
+    .thumbnail-container .thumbnail {
+        max-width: 45vw;
+    }
+}
