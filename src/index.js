@@ -13,6 +13,7 @@ async function fetchTrending() {
   return json.data;
 }
 
+
 function renderFeatured(gifData, index) {
   const { images, slug } = gifData;
   const url = images.original.url;
@@ -26,7 +27,9 @@ function renderFeatured(gifData, index) {
   // no tags in GIPHY response.
   const pTag = document.createElement('p');
   pTag.className = 'tags';
-  pTag.textContent = '#placeholder #more';
+  // giphy API was not returning tags for free account so currenlty using slug
+  const tags = slug.split('-').join(' #');
+  pTag.textContent = `#${tags}`;
 
   const photoOverlay = document.createElement('div');
   photoOverlay.className = 'photo-overlay';
@@ -50,9 +53,6 @@ function openLightbox(e, allData) {
   renderFeatured(gifData, index);
 }
 
-// overlay tags
-// documentation
-// review instructions
 
 function closeLightbox(e) {
   e.preventDefault();
@@ -61,17 +61,42 @@ function closeLightbox(e) {
 }
 
 
-function handleArrowClick(e, direction, allData) {
+function handleArrowClick(direction, allData) {
   const featured = document.querySelector('.featured');
   const index = +featured.dataset.index;
 
+  // reset at back if left click on first image
   let newIndex = direction === 'left' ? index - 1 : index + 1;
   if (newIndex < 0) {
     newIndex = 24;
   }
 
+  // mod handles right click on last img
   const newGifData = allData[newIndex % 25];
+
   renderFeatured(newGifData, newIndex);
+}
+
+
+function handleArrowPress(direction, allData) {
+  // make sure overlay is open
+  const overlay = document.querySelector('.overlay');
+  if (overlay.style.display === 'none') { return; }
+
+  handleArrowClick(direction, allData);
+}
+
+
+function checkKey(e, allData) {
+  // left arrow
+  if (e.keyCode === 37) {
+    handleArrowPress('left', allData);
+  }
+
+  // right arrow
+  if (e.keyCode === 39) {
+    handleArrowPress('left', allData);
+  }
 }
 
 
@@ -79,7 +104,7 @@ function createThumbnailElement(gifData, index) {
   const { images, slug } = gifData;
   const url = images.fixed_width.url;
 
-  const container = document.createElement('a');
+  const container = document.createElement('div');
   container.className = 'thumbnail-container';
 
   const gif = new Image(200, 200);
@@ -104,7 +129,6 @@ function renderThumbnails(allData) {
 
 
 async function main() {
-  debugger
   const allData = await fetchTrending();
   renderThumbnails(allData);
 
@@ -114,13 +138,15 @@ async function main() {
   images.forEach(img => img.addEventListener('click', e => openLightbox(e, allData)));
 
   const leftArrow = document.querySelector('.left-arrow');
-  leftArrow.addEventListener('click', e => handleArrowClick(e, 'left', allData));
+  leftArrow.addEventListener('click', () => handleArrowClick('left', allData));
 
   const rightArrow = document.querySelector('.right-arrow');
-  rightArrow.addEventListener('click', e => handleArrowClick(e, 'right', allData));
+  rightArrow.addEventListener('click', () => handleArrowClick('right', allData));
 
   const close = document.querySelector('.close');
   close.addEventListener('click', closeLightbox);
+
+  document.onkeydown = e => checkKey(e, allData);
 }
 
 document.body.onload = main;
