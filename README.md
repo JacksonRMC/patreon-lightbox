@@ -9,7 +9,7 @@ https://calebcordry.github.io/patreon-lightbox/src/
 
 #### features
 + Arrow keys will click through open lightbox.
-+ Escape key will close lightbox;
++ Escape key will close lightbox.
 + Hashtags will display on hover over image in lightbox.
 
 #### notes
