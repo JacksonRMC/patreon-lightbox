@@ -5,5 +5,8 @@ module.exports = {
     },
     "globals": {
       "fetch": false,
+    },
+    "rules": {
+        "brace-style": 0,
     }
 };
