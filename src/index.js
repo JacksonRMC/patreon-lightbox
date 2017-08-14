@@ -7,6 +7,11 @@ const RATING = 'G';
 const KEY = '5c843f0756d044b495770177c4f3fcf0';
 
 
+/**
+ * Get object of trending gifs from GIPHY
+ * @async
+ * @return {Promise<Object[]>} array of gifData objects
+ */
 async function fetchTrending() {
   const url = `${HOST}${PATH}?api_key=${KEY}&limit=${LIMIT}&rating=${RATING}`;
   const json = await fetch(url).then(res => res.json());
@@ -14,19 +19,27 @@ async function fetchTrending() {
 }
 
 
+/**
+ * Render clicked-on image in fullscreen lighbox
+ * @param {Object} gifData - object containing all data for a single gif
+ * @param {Number} index - index of gif in object of all gif data
+ * @return {undefined}
+ */
 function renderFeatured(gifData, index) {
   const { images, slug } = gifData;
   const url = images.original.url;
 
+  // gif element
   const gif = new Image();
   gif.className = 'featured';
   gif.dataset.index = index;
   gif.src = url;
   gif.alt = slug;
 
-  // no tags in GIPHY response.
+
   const pTag = document.createElement('p');
   pTag.className = 'tags';
+
   // giphy API was not returning tags for free account so currenlty using slug
   const tags = slug.split('-').join(' #');
   pTag.textContent = `#${tags}`;
@@ -42,6 +55,12 @@ function renderFeatured(gifData, index) {
 }
 
 
+/**
+ * Render clicked-on image in fullscreen lighbox
+ * @param {Object} e - click event object
+ * @param {Object[]} allData - array of all trending gif objects
+ * @return {undefined}
+ */
 function openLightbox(e, allData) {
   const overlay = document.querySelector('.overlay');
   overlay.style.display = 'flex';
@@ -54,6 +73,11 @@ function openLightbox(e, allData) {
 }
 
 
+/**
+ * Close lightbox overlay in response to `close` button click
+ * @param {Object} e - click event object
+ * @return {undefined}
+ */
 function closeLightbox(e) {
   e.preventDefault();
   const overlay = document.querySelector('.overlay');
@@ -61,23 +85,36 @@ function closeLightbox(e) {
 }
 
 
+/**
+ * Determines next/prev gif in response to arrow click and passes to render
+ * @param {Object} direction - indicates left vs right click
+ * @param {Object[]} allData - array of all trending gif objects
+ * @return {undefined}
+ */
 function handleArrowClick(direction, allData) {
   const featured = document.querySelector('.featured');
   const index = +featured.dataset.index;
 
   // reset at back if left click on first image
+  const NUMBER_OF_GIFS = 25;
   let newIndex = direction === 'left' ? index - 1 : index + 1;
   if (newIndex < 0) {
-    newIndex = 24;
+    newIndex = NUMBER_OF_GIFS - 1;
   }
 
   // mod handles right click on last img
-  const newGifData = allData[newIndex % 25];
+  const newGifData = allData[newIndex % NUMBER_OF_GIFS];
 
   renderFeatured(newGifData, newIndex);
 }
 
 
+/**
+ * Determines if arrow click needs to call render (if lightbox is active)
+ * @param {Object} direction - indicates left vs right click
+ * @param {Object[]} allData - array of all trending gif objects
+ * @return {undefined}
+ */
 function handleArrowPress(direction, allData) {
   // make sure overlay is open
   const overlay = document.querySelector('.overlay');
@@ -87,6 +124,12 @@ function handleArrowPress(direction, allData) {
 }
 
 
+/**
+ * Fires on every keypress - if it is a left or right arrow passes to handleArrowPress
+ * @param {Object} e - click event object
+ * @param {Object[]} allData - array of all trending gif objects
+ * @return {undefined}
+ */
 function checkKey(e, allData) {
   // left arrow
   if (e.keyCode === 37) {
@@ -100,6 +143,12 @@ function checkKey(e, allData) {
 }
 
 
+/**
+ * Makes thumbnail element containing small version of gif
+ * @param {Object} gifData - object containing all data for a single gif
+ * @param {Number} index - index of gif in object of all gif data
+ * @return {Object} - element containing gif to be rendered
+ */
 function createThumbnailElement(gifData, index) {
   const { images, slug } = gifData;
   const url = images.fixed_width.url;
@@ -118,6 +167,11 @@ function createThumbnailElement(gifData, index) {
 }
 
 
+/**
+ * Takes the gif array and adds the thumbnails to the DOM
+ * @param {Object[]} allData - array of all trending gif objects
+ * @return {undefined}
+ */
 function renderThumbnails(allData) {
   const thumbnailElements = allData.map(createThumbnailElement);
 
@@ -128,13 +182,19 @@ function renderThumbnails(allData) {
 }
 
 
+/**
+ * Main function that fires on DOM load. Starts gallery building process and
+ * adds all event listeners
+ * @async
+ * @return {undefined}
+ */
 async function main() {
+  // get data and build main gallery
   const allData = await fetchTrending();
   renderThumbnails(allData);
 
+  // add event listeners
   const images = document.querySelectorAll('.thumbnail');
-
-  // add event listeners that need ref to data array
   images.forEach(img => img.addEventListener('click', e => openLightbox(e, allData)));
 
   const leftArrow = document.querySelector('.left-arrow');
