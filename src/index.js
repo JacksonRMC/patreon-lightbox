@@ -132,7 +132,6 @@ function handleArrowPress(direction, allData) {
  */
 function checkKey(e, allData) {
   // left arrow
-  debugger;
   if (e.keyCode === 37) {
     handleArrowPress('left', allData);
   }
