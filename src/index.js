@@ -145,6 +145,7 @@ function checkKey(e, allData) {
   }
 }
 
+const randomChoice = array => array[Math.floor(array.length * Math.random())];
 
 /**
  * Makes thumbnail element containing small version of gif
@@ -153,11 +154,14 @@ function checkKey(e, allData) {
  * @return {Object} - element containing gif to be rendered
  */
 function createThumbnailElement(gifData, index) {
+  const colorChoices = ['#e55c5c', '#00e589', '#0cf', '#e5da53', '#892ee5'];
+
   const { images, slug } = gifData;
   const url = images.fixed_width.url;
 
   const container = document.createElement('div');
   container.className = 'thumbnail-container';
+  container.style.backgroundColor = randomChoice(colorChoices);
 
   const gif = new Image(200, 200);
   gif.className = 'thumbnail';
